@@ -1,3 +1,44 @@
+<style>
+.distance-table {
+    overflow-y: scroll;
+    height: 600px;
+    Width: 1200px;
+}
+.reveal td{
+   font-family: Arial;
+   font-size: xx-small;
+   padding:0px;
+   cellpadding="0";
+   cellspacing="0";
+   margin: 0;
+   padding: 0;
+   line-height:normal
+ }
+.reveal th {
+   font-family: Arial;
+   font-size: xx-small;
+   height: 2px;
+   font-weight: bold;
+   text-align: right;
+   background-color: #ccccff;
+   margin: 0;
+   padding: 0;
+   line-height:normal
+
+
+ }
+.reveal table {
+   font-family: Arial;
+   font-size: xx-small;
+   border-spacing: 0px;
+   border-collapse: collapse;
+   margin: 0;
+   padding: 0;
+}
+</style>
+
+
+
 Reproducible Pitch Presentation
 ========================================================
 author: Roberto Diaz
@@ -7,6 +48,7 @@ autosize: true
 
 Existing leaflet map functionality 
 ========================================================
+<small>
 Existing leaflet map for Chicago Historic Buildings features:
 
 - markers
@@ -19,9 +61,9 @@ Although these features are interactive, they are constrained to the leaflet fea
 
 Need controls on the map to focus on specific buildings.
 
+***
 
 Existing leaflet map
-========================================================
 ```{r, eval=TRUE,echo=FALSE,warning=FALSE, message=FALSE,fig.align='right',fig.width=6,fig.height=5}
 library(leaflet)
 library(stringr)
@@ -79,13 +121,15 @@ htmlwidgets::saveWidget(as.widget(my_map), file = "demo11.html")
 
 <iframe src="demo11.html" style="position:absolute;height:80%;width:100%"></iframe>
 
+</small>
 
 
 App Approach 
 ========================================================
-
+<small>
 Use Shiny to add controls to the leaflet map:
 
+- dataframe matrix for Building distances and points
 - textboxes for Building selection
 - dropdown for distances units selection
 - text field for displaying selected buildings
@@ -94,9 +138,22 @@ Based on these selections:
 
 - polylines added to map
 - conditional zooming execution 
-- distance calculated
+- distance calculation retrieval
 
 A decision can be then be made whether the walking distance is an option.
+</small>
+
+Data Frame Matrix 
+========================================================
+<div class="distance-table">
+```{r, eval=TRUE,echo=FALSE,warning=FALSE, message=FALSE}
+library(knitr)
+source("global.R")
+# kable(distances)
+kable(distances,format="html")
+#kable(distances,padding=0)
+```
+</div>
 
 App Implementation
 ========================================================
@@ -104,7 +161,7 @@ App Implementation
 Shiny code files, ui.R and server.R, process locally without issue.
 
 Shiny App Issues:
-- deploying shiny for documenation: issues arouse for compiling an existing shiny app and the rmardown file 
+- deploying shiny for documentation: issues arouse for compiling an existing shiny app and the rmardown file 
 - shared data is needed between the .R files: a global.R file can be used but the shinyio.app does not process it 
 
 Solution:
