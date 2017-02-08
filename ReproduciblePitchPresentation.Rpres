@@ -1,0 +1,115 @@
+Reproducible Pitch Presentation
+========================================================
+author: Roberto Diaz
+date: Febuary 7, 2017
+autosize: true
+
+
+Existing leaflet map functionality 
+========================================================
+Existing leaflet map for Chicago Historic Buildings features:
+
+- markers
+- cluster markers
+- popups 
+- panning
+- zooming
+
+Although these features are interactive, they are constrained to the leaflet features.
+
+Need controls on the map to focus on specific buildings.
+
+
+Existing leaflet map
+========================================================
+```{r, eval=TRUE,echo=FALSE,warning=FALSE, message=FALSE,fig.align='right',fig.width=6,fig.height=5}
+library(leaflet)
+library(stringr)
+library(plotly)
+
+skyScraperIcon <- makeIcon(
+  iconUrl = c("skyscraper-icon-png-4.png"),
+  iconWidth = 62*200/230, iconHeight = 62,
+  iconAnchorX = 62*200/230/2, iconAnchorY = 62/2.1
+)
+
+skyScraperSites <- c(
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/auditorium-building/'>Auditorium Building</a>",
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/carbide-and-carbon-building/'>Carbide and Carbon Building</a>",
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/chicago-board-of-trade-building/'>Chicago Board of Trade Building</a>",
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/fine-arts-building/'>Fine Arts Building</a>",
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/manhattan-building/'>Manhattan Building</a>",
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/marquette-building/'>Marquette Building</a>",
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/monadnock-building/'>Monadnock Building</a>",
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/railway-exchange-building/'>Railway Exchange Building</a>",
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/reliance-building/'>Reliance Building</a>",
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/sullivan-center/'>Sullivan Center</a>",
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/the-rookery/'>The Rookery</a>",
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/tribune-tower/'>Tribune Tower</a>",
+  "<a href='http://www.architecture.org/architecture-chicago/buildings-of-chicago/building/wrigley-building/'>Wrigley Building</a>"
+)
+
+
+skyScraperNames <- str_replace_all(str_extract(skyScraperSites,">.*<"),"[<]|[>]","")
+
+# circleColors <- c("black","red","green","blue","cyan","magenta","yellow","gray", "purple","orange","violet","royalblue","tan")
+circleColors <- c("chartreuse","magenta","blue","orange","darkorchid","seagreen","yellow","rosybrown","purple","saddlebrown","salmon","royalblue","orange")
+binpal <- colorBin("Set2", 1:13,13,pretty = FALSE)
+factpal <- colorFactor(topo.colors(13), levels=skyScraperNames)
+
+
+
+historicSkyScapersdf <- data.frame(latitude = c(41.875996,41.886612,41.877823,41.876468,41.876073,41.879620,41.877979,41.878599,41.883034,41.881856,41.879090,41.890455,41.889451),longitude=c(-87.624855,-87.624994,-87.632380,-87.624838,-87.628924,-87.629726,-87.629566,-87.624891,-87.628226,-87.627410,-87.631857,-87.623100,-87.624891),skyScraperNames= skyScraperNames)
+
+
+
+my_map <- historicSkyScapersdf %>%
+        leaflet() %>% 
+        addTiles() %>%
+        addMarkers(icon = skyScraperIcon,popup = skyScraperSites,clusterOptions = markerClusterOptions()) %>%
+        addCircleMarkers(color = circleColors,popup = skyScraperSites,clusterOptions = markerClusterOptions())  %>%
+        addLegend(position = 'topright',labels = skyScraperNames, colors = circleColors)
+
+# my_map
+
+htmlwidgets::saveWidget(as.widget(my_map), file = "demo.html")
+
+
+```
+
+<iframe src="demo.html" style="position:absolute;height:80%;width:100%"></iframe>
+
+
+
+App Approach 
+========================================================
+
+Use Shiny to add controls to the leaflet map:
+
+- textboxes for Building selection
+- dropdown for distances units selection
+- text field for displaying selected buildings
+
+Based on these selections: 
+
+- polylines added to map
+- conditional zooming execution 
+- disance calculated
+
+A decision can be then be made whether the walking distance is an option.
+
+App Implementation
+========================================================
+<small>
+Shiny code files, ui.R and server.R, process locally without issue.
+
+Shiny App Issues:
+- deploying shiny for documenation: issues arouse for compiling an existing shiny app and the rmardown file 
+- shared data is needed between the .R files: a global.R file can be used but the shinyio.app does not process it 
+
+Solution:
+- global.R data chunks were included in each of the shiny .R files 
+- rmkarkdown documentation: an inline chunk was used to include the app
+
+ [Chicago Historic Buildings Documentation Shiny app](https://robertodiaz2016.shinyapps.io/ChicagoHistoricBuildingsDocumentation)  
+  [Chicago Historic Buildings Shiny app](https://robertodiaz2016.shinyapps.io/ChicagoHistoricBuildings/) </small> 
