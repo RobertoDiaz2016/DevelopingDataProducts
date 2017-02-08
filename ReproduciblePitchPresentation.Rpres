@@ -72,12 +72,12 @@ my_map <- historicSkyScapersdf %>%
 
 # my_map
 
-htmlwidgets::saveWidget(as.widget(my_map), file = "demo.html")
+htmlwidgets::saveWidget(as.widget(my_map), file = "demo11.html")
 
 
 ```
 
-<iframe src="demo.html" style="position:absolute;height:80%;width:100%"></iframe>
+<iframe src="demo11.html" style="position:absolute;height:80%;width:100%"></iframe>
 
 
 
@@ -94,7 +94,7 @@ Based on these selections:
 
 - polylines added to map
 - conditional zooming execution 
-- disance calculated
+- distance calculated
 
 A decision can be then be made whether the walking distance is an option.
 
